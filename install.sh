@@ -22,7 +22,7 @@ sudo certbot certonly --standalone -d $DOMAIN --non-interactive --agree-tos -m $
 echo "📦 جاري تثبيت مكتبات المشروع..."
 npm install express whatsapp-web.js qrcode-terminal qrcode axios
 
-# 5. إنشاء ملف index.js المطور مع ميزة الـ Bio
+# 5. إنشاء ملف index.js المطور
 echo "📝 جاري كتابة ملف index.js المطور..."
 cat << 'INDEX_EOF' > index.js
 const https = require('https');
@@ -31,12 +31,10 @@ const express = require('express');
 const { Client, LocalAuth } = require('whatsapp-web.js');
 const qrcodeTerminal = require('qrcode-terminal');
 const QRCode = require('qrcode');
-const axios = require('axios');
 
 const app = express();
 app.use(express.json());
 
-// إعدادات الشهادة المشفرة
 const domain = "DOMAIN_PLACEHOLDER";
 const options = {
     cert: fs.readFileSync(`/etc/letsencrypt/live/${domain}/fullchain.pem`),
@@ -63,16 +61,17 @@ client.on('ready', () => {
     latestQR = "";
     console.log('✅ واتساب جاهز للإرسال!');
     
-    // --- ميزة الـ Bio Heartbeat لمنع الخمول ---
     setInterval(async () => {
         try {
-            const now = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
-            await client.setStatus(Active: \${now} | Server Online 🚀\`);
-            console.log(💓 Heartbeat: Bio updated at \${now}\`);
+            if (client && client.pupPage && !client.pupPage.isClosed()) {
+                const now = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
+                await client.setStatus(`Active: ${now} | Server Online 🚀`);
+                console.log(`💓 Heartbeat: Bio updated at ${now}`);
+            }
         } catch (e) {
             console.error('Heartbeat failed');
         }
-    }, 15 * 60 * 1000); // كل 15 دقيقة
+    }, 15 * 60 * 1000);
 });
 
 client.initialize();
@@ -81,13 +80,13 @@ app.get('/scan', async (req, res) => {
     if (!latestQR) return res.send('<h1 style="text-align:center;font-family:Arial;margin-top:50px;">✅ WhatsApp is Connected!</h1>');
     try {
         const qrImage = await QRCode.toDataURL(latestQR);
-        res.send(
+        res.send(`
             <div style="text-align:center;margin-top:50px;font-family:Arial;">
                 <h2>Scan QR Code to Connect WhatsApp</h2>
                 <img src="${qrImage}" width="300" style="border:10px solid white;box-shadow:0 0 10px rgba(0,0,0,0.1);"/>
                 <p>Refresh page if QR expires.</p>
             </div>
-       );
+        `);
     } catch (err) { res.status(500).send('Error'); }
 });
 
@@ -99,15 +98,14 @@ app.post('/webhook/new-order', async (req, res) => {
     if (!phone || !otp) return res.status(400).send('Missing data');
 
     try {
-        // فحص "حارس البوابة" لضمان جاهزية المتصفح
         if (client && client.info && client.pupPage && !client.pupPage.isClosed()) {
             const chatId = `${phone.replace(/[^0-9]/g, '')}@c.us`;
             await client.sendMessage(chatId, `كود التحقق الخاص بك هو: ${otp}`);
             console.log(`✅ Sent OTP to: ${phone}`);
             res.status(200).send('Success');
         } else {
-            console.log('❌ Browser not ready - Request ignored to prevent crash');
-            res.status(503).send('Service Unavailable - Browser Reconnecting');
+            console.log('❌ Browser not ready - Request ignored');
+            res.status(503).send('Service Unavailable');
         }
     } catch (e) {
         console.error('❌ Sending Error:', e.message);
@@ -115,24 +113,16 @@ app.post('/webhook/new-order', async (req, res) => {
     }
 });
 
-
-async function start() {
-    try {
-        https.createServer(options, app).listen(443, '0.0.0.0', () => {
-            console.log('\n============================================');
-            console.log('🚀 السيرفر يعمل الآن بنجاح عبر HTTPS');
-            console.log('📍 رابط الويب هوك: https://$DOMAIN/webhook/new-order');
-            console.log('📸 رابط المسح: https://$DOMAIN/scan');
-            console.log('============================================\n');
-        });
-    } catch (err) { console.log('Server Error:', err.message); }
-}
-start();
+https.createServer(options, app).listen(443, '0.0.0.0', () => {
+    console.log('🚀 السيرفر يعمل الآن بنجاح عبر HTTPS');
+});
 INDEX_EOF
+
+# ربط الدومين بالملف
 sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" index.js
 
-# 6. تثبيت PM2 وضبط التشغيل الدائم
-echo "⚙️ ضبط التشغيل الدائم في الخلفية..."
+# 6. تشغيل PM2
+echo "⚙️ ضبط التشغيل الدائم..."
 sudo npm install pm2 -g
 sudo pm2 stop all 2>/dev/null
 sudo pm2 delete "whatsapp-otp" 2>/dev/null
@@ -147,6 +137,5 @@ echo "📸 Scan QR: https://$DOMAIN/scan"
 echo "------------------------------------------------"
 EOF
 
-# تنفيذ السكريبت
 chmod +x final_setup.sh
 ./final_setup.sh
