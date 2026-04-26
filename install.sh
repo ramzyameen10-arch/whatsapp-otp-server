@@ -67,8 +67,8 @@ client.on('ready', () => {
     setInterval(async () => {
         try {
             const now = new Date().toLocaleString('ar-SA', { timeZone: 'Asia/Riyadh' });
-            await client.setStatus(\`Active: \${now} | Server Online 🚀\`);
-            console.log(\`💓 Heartbeat: Bio updated at \${now}\`);
+            await client.setStatus(Active: \${now} | Server Online 🚀\`);
+            console.log(💓 Heartbeat: Bio updated at \${now}\`);
         } catch (e) {
             console.error('Heartbeat failed');
         }
@@ -81,13 +81,13 @@ app.get('/scan', async (req, res) => {
     if (!latestQR) return res.send('<h1 style="text-align:center;font-family:Arial;margin-top:50px;">✅ WhatsApp is Connected!</h1>');
     try {
         const qrImage = await QRCode.toDataURL(latestQR);
-        res.send(\`
+        res.send(
             <div style="text-align:center;margin-top:50px;font-family:Arial;">
                 <h2>Scan QR Code to Connect WhatsApp</h2>
-                <img src="\${qrImage}" width="300" style="border:10px solid white;box-shadow:0 0 10px rgba(0,0,0,0.1);"/>
+                <img src="${qrImage}" width="300" style="border:10px solid white;box-shadow:0 0 10px rgba(0,0,0,0.1);"/>
                 <p>Refresh page if QR expires.</p>
             </div>
-        \`);
+       );
     } catch (err) { res.status(500).send('Error'); }
 });
 
