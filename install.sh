@@ -93,20 +93,27 @@ app.get('/scan', async (req, res) => {
 app.post('/webhook/new-order', async (req, res) => {
     const data = req.body.record ? req.body.record : req.body;
     const phone = (data.phone_number || data.phone || "").toString();
-    const otp = data.otp_code;
+    const otp = (data.otp_code || data.code || "").toString();
 
     if (!phone || !otp) return res.status(400).send('Missing data');
 
     try {
-        const chatId = \`\${phone.replace(/[^0-9]/g, '')}@c.us\`;
-        await client.sendMessage(chatId, \`كود التحقق الخاص بك هو: \${otp}\`);
-        console.log(\`✅ Sent to \${phone}\`);
-        res.status(200).send('Success');
+        if (client && client.info && client.pupPage && !client.pupPage.isClosed()) {
+            // لاحظ وضع \ قبل $ و قبل ` لضمان كتابة الملف بشكل سليم
+            const chatId = \`\${phone.replace(/[^0-9]/g, '')}@c.us\`;
+            await client.sendMessage(chatId, \`كود التحقق الخاص بك هو: \${otp}\`);
+            console.log(\`✅ Sent to \${phone}\`);
+            res.status(200).send('Success');
+        } else {
+            console.log('❌ Browser not ready - Sending failed to avoid crash');
+            res.status(503).send('Service Unavailable - Browser Reconnecting');
+        }
     } catch (e) {
-        console.error('❌ Error:', e.message);
+        console.error('❌ Sending Error:', e.message);
         res.status(500).send('Error');
     }
 });
+
 
 async function start() {
     try {
