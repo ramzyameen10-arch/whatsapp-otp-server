@@ -14,6 +14,9 @@
 IPv6 networking is disabling
 
 تثبيت السكربت عن طريق نسخة ولصقة بالترمينال
+أو من خلال الرابط 
+curl -sSL https://raw.githubusercontent.com/ramzyameen10-arch/whatsapp-otp-server/refs/heads/main/install.sh | bash
+
 ادخال الدومين
 اداخل الايميل
 ثم انتر
