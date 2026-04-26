@@ -24,7 +24,7 @@ npm install express whatsapp-web.js qrcode-terminal qrcode axios
 
 # 5. إنشاء ملف index.js المطور مع ميزة الـ Bio
 echo "📝 جاري كتابة ملف index.js المطور..."
-cat << INDEX_EOF > index.js
+cat << 'INDEX_EOF' > index.js
 const https = require('https');
 const fs = require('fs');
 const express = require('express');
@@ -37,9 +37,10 @@ const app = express();
 app.use(express.json());
 
 // إعدادات الشهادة المشفرة
+const domain = "DOMAIN_PLACEHOLDER";
 const options = {
-    cert: fs.readFileSync('/etc/letsencrypt/live/$DOMAIN/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/$DOMAIN/privkey.pem')
+    cert: fs.readFileSync(`/etc/letsencrypt/live/${domain}/fullchain.pem`),
+    key: fs.readFileSync(`/etc/letsencrypt/live/${domain}/privkey.pem`)
 };
 
 let latestQR = "";
@@ -128,6 +129,7 @@ async function start() {
 }
 start();
 INDEX_EOF
+sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" index.js
 
 # 6. تثبيت PM2 وضبط التشغيل الدائم
 echo "⚙️ ضبط التشغيل الدائم في الخلفية..."
