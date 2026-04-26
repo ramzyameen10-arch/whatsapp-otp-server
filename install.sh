@@ -98,14 +98,14 @@ app.post('/webhook/new-order', async (req, res) => {
     if (!phone || !otp) return res.status(400).send('Missing data');
 
     try {
+        // فحص "حارس البوابة" لضمان جاهزية المتصفح
         if (client && client.info && client.pupPage && !client.pupPage.isClosed()) {
-            // لاحظ وضع \ قبل $ و قبل ` لضمان كتابة الملف بشكل سليم
-            const chatId = \`\${phone.replace(/[^0-9]/g, '')}@c.us\`;
-            await client.sendMessage(chatId, \`كود التحقق الخاص بك هو: \${otp}\`);
-            console.log(\`✅ Sent to \${phone}\`);
+            const chatId = `${phone.replace(/[^0-9]/g, '')}@c.us`;
+            await client.sendMessage(chatId, `كود التحقق الخاص بك هو: ${otp}`);
+            console.log(`✅ Sent OTP to: ${phone}`);
             res.status(200).send('Success');
         } else {
-            console.log('❌ Browser not ready - Sending failed to avoid crash');
+            console.log('❌ Browser not ready - Request ignored to prevent crash');
             res.status(503).send('Service Unavailable - Browser Reconnecting');
         }
     } catch (e) {
