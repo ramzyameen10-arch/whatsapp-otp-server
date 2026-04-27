@@ -14,6 +14,13 @@ echo "⏳ جاري تثبيت المتصفح وكافة مكتبات النظا�
 sudo apt update && sudo apt upgrade -y
 sudo apt install -y nodejs npm certbot chromium-browser fonts-liberation libasound2t64 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc-s1 libgdk-pixbuf2.0-0 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release xdg-utils curl
 
+# 2.2 لعمل ذاكرة وهمية لتجنب ايقاف السيرفر عن العمل 2 جيجا
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
 # 3. إصدار شهادة الأمان SSL
 echo "🔐 جاري إصدار شهادة SSL للدومين $DOMAIN..."
 sudo certbot certonly --standalone -d $DOMAIN --non-interactive --agree-tos -m $EMAIL
