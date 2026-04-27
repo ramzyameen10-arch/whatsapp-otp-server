@@ -23,13 +23,9 @@ bash <(curl -sSL https://raw.githubusercontent.com/ramzyameen10-arch/whatsapp-ot
 
 
 
-ادخال الدومين
+ادخال الدومين او الدومين الفرعي
 
-اداخل الايميل
-
-DOMAIN: otp.ramzyameen.xyz
-
-EMAIL : ramzyameen@yahoo.com
+اداخل الايميل اي ايميل
 
 ثم انتر
 سوف يظهر لك رابطين
