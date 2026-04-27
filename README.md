@@ -61,17 +61,24 @@ sudo pm2 restart 0
 sudo pm2 status
 
  لايقاف الخدمة و لفرمتت المتصفح 
+
 sudo pm2 stop all
+
 sudo pkill -f chromium
 
-
 لبدء الخدمة
+
 sudo pm2 start whatsapp-otp
 
 
+
 لمعرفة سجل الاحداث
+
 sudo pm2 logs whatsapp-otp
+
  او لمعرفة 50 سطر فقط
+
 sudo pm2 logs whatsapp-otp --lines 50
+
 
 حافظ الى الواتساب الخاص بارسال الرسائل بجوالك ان لا يدخل في وضع الخمول
