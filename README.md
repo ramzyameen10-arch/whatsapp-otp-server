@@ -28,6 +28,7 @@ bash <(curl -sSL https://raw.githubusercontent.com/ramzyameen10-arch/whatsapp-ot
 اداخل الايميل
 
 DOMAIN: otp.ramzyameen.xyz
+
 EMAIL : ramzyameen@yahoo.com
 
 ثم انتر
