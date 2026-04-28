@@ -16,17 +16,14 @@ IPv6 networking is disabling
 
 تثبيت السكربت عن طريق نسخة ولصقة بالترمينال
 
-
 او من خلال  لصق الرابط بالترمينال
-
 bash <(curl -sSL https://raw.githubusercontent.com/ramzyameen10-arch/whatsapp-otp-server/refs/heads/main/install.sh)
 
 
-
-ادخال الدومين او الدومين الفرعي
-
-اداخل الايميل اي ايميل
-
+ادخال الدومين
+اداخل الايميل
+DOMAIN: o.ramzyameen.xyz
+EMAIL : ramzyameen@yahoo.com
 ثم انتر
 سوف يظهر لك رابطين
 رابط الويب هوك
@@ -36,15 +33,10 @@ bash <(curl -sSL https://raw.githubusercontent.com/ramzyameen10-arch/whatsapp-ot
 لعمل ذاكرة وهمية لتجنب ايقاف السيرفر عن العمل 2 جيجا
 
 sudo fallocate -l 2G /swapfile
-
 sudo chmod 600 /swapfile
-
 sudo mkswap /swapfile
-
 sudo swapon /swapfile
-
 echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
-
 
 للتاكد من عمل الذاكرة الوهمية
 free -h
@@ -57,24 +49,20 @@ sudo pm2 restart 0
 sudo pm2 status
 
  لايقاف الخدمة و لفرمتت المتصفح 
-
 sudo pm2 stop all
-
 sudo pkill -f chromium
 
-لبدء الخدمة
 
+لبدء الخدمة
 sudo pm2 start whatsapp-otp
 
 
-
 لمعرفة سجل الاحداث
-
 sudo pm2 logs whatsapp-otp
-
  او لمعرفة 50 سطر فقط
-
 sudo pm2 logs whatsapp-otp --lines 50
 
-
 حافظ الى الواتساب الخاص بارسال الرسائل بجوالك ان لا يدخل في وضع الخمول
+
+لمعرفة استخدم التطبيقات للذاكرة النظام
+htop
